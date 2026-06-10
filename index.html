@@ -580,6 +580,7 @@
         deckEl.innerHTML = renderCards(state.data);
         fitAllCanvases();
         fitCoreFontSize();
+        fitCoverTexts();
       } else {
         deckEl.innerHTML = "";
       }
@@ -766,10 +767,35 @@
       }
     }
 
+    /**
+     * 封面 3 个文字元素：单行不换行 + 缩字号到 fit。
+     * 容器固定宽 1080-160=920px（左右各留 80px）。
+     */
+    const COVER_CONTENT_W = 920;
+    function fitSingleLine(el, maxSize, minSize) {
+      if (!el) return;
+      el.style.whiteSpace = "nowrap";
+      el.style.overflow = "hidden";
+      el.style.textOverflow = "ellipsis";
+      let size = maxSize;
+      el.style.fontSize = size + "px";
+      while (el.scrollWidth > COVER_CONTENT_W && size > minSize) {
+        size -= 2;
+        el.style.fontSize = size + "px";
+      }
+    }
+
+    function fitCoverTexts() {
+      fitSingleLine(document.querySelector(".card-cover h1.title"), 132, 56);
+      fitSingleLine(document.querySelector(".card-cover .author"), 36, 22);
+      fitSingleLine(document.querySelector(".card-cover .tagline"), 38, 24);
+    }
+
     window.addEventListener("resize", () => {
       if (state.data) {
         fitAllCanvases();
         fitCoreFontSize();
+        fitCoverTexts();
       }
     });
 
